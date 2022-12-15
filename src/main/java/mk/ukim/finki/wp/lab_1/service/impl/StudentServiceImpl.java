@@ -1,13 +1,12 @@
 package mk.ukim.finki.wp.lab_1.service.impl;
 
-import mk.ukim.finki.wp.lab_1.data.DataHolder;
 import mk.ukim.finki.wp.lab_1.model.Student;
-import mk.ukim.finki.wp.lab_1.repository.StudentRepository;
+import mk.ukim.finki.wp.lab_1.repository.jpa.StudentRepository;
 import mk.ukim.finki.wp.lab_1.service.StudentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -19,13 +18,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> listAll() {
-        return this.studentRepository.findAllStudents();
+        return this.studentRepository.findAll();
     }
 
     @Override
-    public List<Student> searchByNameOrSurname(String text) {
-        return DataHolder.students.stream().filter(e -> e.getName().equals(text) ||
-                e.getSurname().equals(text)).collect(Collectors.toList());
+    public List<Student> searchStudentByNameOrSurname(String text) {
+        return this.studentRepository.findStudentByNameOrSurname(text,text);
     }
 
     @Override

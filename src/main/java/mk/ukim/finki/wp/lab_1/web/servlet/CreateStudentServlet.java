@@ -1,8 +1,8 @@
-package mk.ukim.finki.wp.lab_1.web;
+package mk.ukim.finki.wp.lab_1.web.servlet;
 
 import mk.ukim.finki.wp.lab_1.model.Student;
-import mk.ukim.finki.wp.lab_1.repository.CourseRepository;
-import mk.ukim.finki.wp.lab_1.repository.StudentRepository;
+import mk.ukim.finki.wp.lab_1.service.CourseService;
+import mk.ukim.finki.wp.lab_1.service.StudentService;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -17,19 +17,18 @@ import java.util.List;
 @WebServlet(name = "create-student-servlet", urlPatterns = "/createStudent")
 public class CreateStudentServlet extends HttpServlet {
     private final SpringTemplateEngine springTemplateEngine;
-    private final StudentRepository studentRepository;
-    private final CourseRepository courseRepository;
+    private final CourseService courseService;
+    private final StudentService studentService;
 
-    public CreateStudentServlet(SpringTemplateEngine springTemplateEngine, StudentRepository studentRepository, CourseRepository courseRepository) {
+    public CreateStudentServlet(SpringTemplateEngine springTemplateEngine, CourseService courseService, StudentService studentService) {
         this.springTemplateEngine = springTemplateEngine;
-        this.studentRepository = studentRepository;
-        this.courseRepository = courseRepository;
+        this.courseService = courseService;
+        this.studentService = studentService;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         WebContext context = new WebContext(req, resp, req.getServletContext());
-
         springTemplateEngine.process("/createStudent", context, resp.getWriter());
     }
 
@@ -40,13 +39,11 @@ public class CreateStudentServlet extends HttpServlet {
         String password = req.getParameter("password");
         String username = req.getParameter("username");
 
-        Student student = new Student(username, password, name, surname);
+//        String btn = req.getParameter("submit");
+//        req.getSession().setAttribute("submit", btn);
+        studentService.save(username,password,name,surname);
 
-
-        studentRepository.save(student);
-        List<Student> studentList = studentRepository.findAllStudents();
-
-        req.getSession().setAttribute("studentListInCourse", studentList);
+//        req.getSession().setAttribute("studentListInCourse", studentService.listAll(););
         resp.sendRedirect("/addStudent");
     }
 }
