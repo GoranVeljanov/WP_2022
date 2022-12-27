@@ -1,0 +1,11 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+    <ul>
+        <div class="container text-center">
+            <li class="text-danger" th:each="grade : ${grades}"
+                th:text="${grade.student.name + ' ' +
+                 grade.student.surname + ' (' +grade.student.username+')' + ' - ' +
+                 grade.grade + ' - ' + #temporals.format(grade.timestamp, 'dd-MM-yyyy HH:mm:ss') + ' ' + grade.course.name}">
+            </li>
+        </div>
+    </ul>
+</th:block>
