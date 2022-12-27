@@ -1,37 +1,8 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Welcome and Choose a Course</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
     <style type="text/css">
-        body {
-            width: 800px;
-            margin: auto;
-        }
 
         li {
             list-style-type: none;
-        }
-
-        .add-course {
-            display: inline-block;
-        }
-
-        main, header {
-            width: 500px;
-            display: inline-block;
         }
 
         .btn-s {
@@ -39,8 +10,7 @@
         }
     </style>
 </head>
-<body>
-<header>
+<header class="container" style="display: -webkit-box">
     <h1>Courses List</h1>
     <ul>
         <li th:each="course: ${courses}">
@@ -56,33 +26,31 @@
             </div>
         </li>
     </ul>
+    <aside class="text-right">
+        <div class="container">
+            <div class="add-course"><br>
+                <a class="btn btn-sm btn-dark" href="/courses/add-form">Add course</a>
+            </div>
+            <br>
+            <form method="GET" action="/courses/sort-courses">
+                <input type="submit" value="Sort Courses" class="btn btn-sm btn-outline-secondary">
+            </form>
+        </div>
+    </aside>
 </header>
-<main>
+<hr>
+<main class="container">
     <h2>Choose course:</h2>
     <form th:action="@{/addStudent}" th:method="POST">
         <ul>
             <li th:each="c: ${courses}">
-                <input type="radio" name="courseId" th:value="${c.getCourseId()}">
-                <th:block th:text="${c.getName()}"></th:block>
-                <th:block th:text="${c.getDescription()}"></th:block>
-
+                <input th:id="${c.courseId}" type="radio" name="courseId" th:value="${c.courseId}">
+                <label th:for="courseId" th:text="${c.name}"></label>
+                <th:block th:text="${c.description}"></th:block>
             </li>
         </ul>
-        <!--        <input id="1" type="radio" name="courseId" value="1"> Web programming<br/>-->
-        <!--        <input id="2" type="radio" name="courseId" value="2"> Operating System<br/>-->
-        <!--        <input id="3" type="radio" name="courseId" value="3"> Electronic and Mobile<br/>-->
-        <!--        <input id="4" type="radio" name="courseId" value="4"> Computer Network<br/>-->
-
         <br/>
-        <input type="submit" name="submit" class="btn btn-block btn-dark">
+        <input type="submit" name="submit" class="btn btn-block btn-success">
     </form>
-
 </main>
-<div class="add-course">
-    <a class="btn btn-block btn-dark" href="/courses/add-form">Add course</a>
-</div>
-<form method="GET" action="/courses/sort-courses">
-    <input type="submit" value="Sort Courses" class="btn btn-sm btn-info">
-</form>
-</body>
-</html>
+<hr>

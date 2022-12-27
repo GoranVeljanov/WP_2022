@@ -9,4 +9,5 @@ public interface StudentService {
     List<Student> listAll();
     List<Student> searchStudentByNameOrSurname(String text);
     Student save(String username, String password, String name, String surname);
+    List<Student> findStudentByUsername(String username);
 }

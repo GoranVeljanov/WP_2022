@@ -12,7 +12,7 @@ public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Character grade;
+    private Character grade;//
 
     @ManyToOne
     private Student student;

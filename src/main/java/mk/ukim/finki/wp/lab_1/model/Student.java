@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class Student {
     String surname;
     @OneToMany(mappedBy = "student")
     private List<Grade> grades;
+    @ManyToMany
+    private List<Course> courses;
 
     public Student(String username, String password, String name, String surname) {
         this.username = username;

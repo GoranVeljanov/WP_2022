@@ -29,7 +29,8 @@ public class CreateStudentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         WebContext context = new WebContext(req, resp, req.getServletContext());
-        springTemplateEngine.process("/createStudent", context, resp.getWriter());
+        context.setVariable("bodyContent","/createStudent");
+        springTemplateEngine.process("/master-template", context, resp.getWriter());
     }
 
     @Override
@@ -38,12 +39,14 @@ public class CreateStudentServlet extends HttpServlet {
         String surname = req.getParameter("surname");
         String password = req.getParameter("password");
         String username = req.getParameter("username");
+        WebContext webContext = new WebContext(req, resp, req.getServletContext());
 
-//        String btn = req.getParameter("submit");
-//        req.getSession().setAttribute("submit", btn);
         studentService.save(username,password,name,surname);
 
-//        req.getSession().setAttribute("studentListInCourse", studentService.listAll(););
-        resp.sendRedirect("/addStudent");
+        req.getSession().setAttribute("studentListInCourse", studentService.listAll());
+        webContext.setVariable("allStudents", studentService.listAll());
+        webContext.setVariable("bodyContent","listStudents.html");
+        this.springTemplateEngine.process("master-template.html", webContext, resp.getWriter());
+
     }
 }

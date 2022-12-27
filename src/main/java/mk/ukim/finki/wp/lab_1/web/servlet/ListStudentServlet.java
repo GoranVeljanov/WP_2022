@@ -1,6 +1,8 @@
 package mk.ukim.finki.wp.lab_1.web.servlet;
 
 
+import mk.ukim.finki.wp.lab_1.model.Course;
+import mk.ukim.finki.wp.lab_1.model.Student;
 import mk.ukim.finki.wp.lab_1.service.CourseService;
 import mk.ukim.finki.wp.lab_1.service.GradeService;
 import mk.ukim.finki.wp.lab_1.service.StudentService;
@@ -14,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @WebServlet(name = "list-student-servlet", urlPatterns = "/addStudent")
@@ -32,31 +37,45 @@ public class ListStudentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String courseID = req.getSession().getAttribute("courseId").toString();
-        String name = (String) req.getParameter("username");
+//
+        String username =  req.getParameter("username");
         WebContext webContext = new WebContext(req, resp, req.getServletContext());
-        Character grade = req.getParameter("grade").charAt(0);
-        req.getSession().setAttribute("grade", grade);
-        webContext.setVariable("grade", gradeService.findGradeByUsernameAndCourseId(name, Long.valueOf(courseID)));
-        webContext.setVariable("allStudents", studentService.listAll());
-        webContext.setVariable("courseId", courseID);
-        this.springTemplateEngine.process("listStudents.html", webContext, resp.getWriter());
-
+        Boolean error=(Boolean) req.getSession().getAttribute("hasError");
+        if(error){
+            webContext.setVariable("error","Student already exists in the course");
+        }
+        if (username == null) {
+            String courseID = (String) req.getSession().getAttribute("courseId");
+            webContext.setVariable("allStudents", studentService.listAll());
+            webContext.setVariable("courseId", courseID);
+            webContext.setVariable("bodyContent","listStudents.html");
+            this.springTemplateEngine.process("master-template.html", webContext, resp.getWriter());
+        } else {
+            String courseID = (String) req.getSession().getAttribute("courseId");
+            Character grade = req.getParameter("grade").charAt(0);
+            req.getSession().setAttribute("grades", grade);
+            webContext.setVariable("grades", gradeService.findGradeByUsernameAndCourseId(username, Long.valueOf(courseID)));
+            webContext.setVariable("allStudents", studentService.listAll());
+            webContext.setVariable("courseId", courseID);
+            webContext.setVariable("bodyContent","listStudents.html");
+            this.springTemplateEngine.process("master-template.html", webContext, resp.getWriter());
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String student = (String) req.getParameter("username");
+
         if (student == null) {
-//            String search = (String) req.getParameter("search");
+            Long courseId = Long.valueOf(req.getParameter("courseId"));
             WebContext webContext = new WebContext(req, resp, this.getServletContext());
-            String courseID = (String) req.getParameter("courseId");
-            req.getSession().setAttribute("courseId", courseID);
-//            List<Student> students = studentService.searchStudentByNameOrSurname(search);
-            webContext.setVariable("courseId", courseID);
-            webContext.setVariable("allStudents", studentService.listAll());
-            this.springTemplateEngine.process("listStudents.html", webContext, resp.getWriter());
+            req.getSession().setAttribute("courseId",courseId);
+
+            webContext.setVariable("courseId", courseId);
+            webContext.setVariable("allStudents",studentService.listAll());
+            webContext.setVariable("bodyContent","listStudents");
+            this.springTemplateEngine.process("master-template.html", webContext, resp.getWriter());
         }
     }
 }

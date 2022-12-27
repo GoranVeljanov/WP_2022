@@ -7,6 +7,7 @@ import mk.ukim.finki.wp.lab_1.model.Student;
 import mk.ukim.finki.wp.lab_1.model.Teacher;
 import mk.ukim.finki.wp.lab_1.model.enumeration.Type;
 import mk.ukim.finki.wp.lab_1.model.exceptions.CourseNotFoundException;
+import mk.ukim.finki.wp.lab_1.model.exceptions.StudentAlreadyExistsInCourse;
 import mk.ukim.finki.wp.lab_1.model.exceptions.StudentNotFoundException;
 import mk.ukim.finki.wp.lab_1.model.exceptions.TeacherNotFoundException;
 import mk.ukim.finki.wp.lab_1.repository.jpa.CourseRepository;
@@ -37,21 +38,26 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> listStudentsByCourse(Long courseId) {
-        return this.courseRepository.findAllByCourseId(courseId);
+    public List<Student> findStudentsByCourseId(Long courseId) {
+        return this.courseRepository.findStudentsByCourseId(courseId);
     }
+
     @Override
     public List<Course> listAll() {
         return this.courseRepository.findAll();
     }
 
     @Override
-    public Course addStudentInCourse(String username, Long courseId, LocalDateTime dateTime, Character grade){
-        Student student = this.studentRepository.findById(username).orElseThrow(()-> new StudentNotFoundException(username));
-        Course course = this.courseRepository.findById(courseId).orElseThrow(()-> new CourseNotFoundException(courseId));
-        Grade grade1 = new Grade(grade,student,course,dateTime);
-        gradeRepository.save(grade1);
-        return course;
+    public Boolean addStudentInCourse(String username, Long courseId, LocalDateTime dateTime, Character grade) {
+        Student student = this.courseRepository.findStudentInCourse(username, courseId);
+        if (student == null) {
+            student = this.studentRepository.findById(username).orElseThrow();
+            Course course = this.courseRepository.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
+            Grade grade1 = new Grade(grade, student, course, dateTime);
+            gradeRepository.save(grade1);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -67,9 +73,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public Optional<Course> save(String name, String description, Teacher teacherId) {
-        Teacher teacher = this.teacherRepository.findById(teacherId.getId()).orElseThrow(()-> new TeacherNotFoundException(teacherId.getId()));
+        Teacher teacher = this.teacherRepository.findById(teacherId.getId()).orElseThrow(() -> new TeacherNotFoundException(teacherId.getId()));
         this.courseRepository.deleteByName(name);
-        return Optional.of(this.courseRepository.save(new Course(name,description,teacher,new ArrayList<>(),Type.MANDATORY)));
+        return Optional.of(this.courseRepository.save(new Course(name, description, teacher, new ArrayList<>(), Type.MANDATORY)));
     }
 
     @Override
@@ -81,5 +87,6 @@ public class CourseServiceImpl implements CourseService {
     public List<Grade> findGradesById(Long id) {
         return this.courseRepository.findById(id).get().getGrades();
     }
+
 
 }

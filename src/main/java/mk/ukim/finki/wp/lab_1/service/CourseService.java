@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseService {
-    List<Course> listStudentsByCourse(Long courseId);
+    List<Student> findStudentsByCourseId(Long courseId);
 
     List<Course> listAll();
 
-    Course addStudentInCourse(String username, Long courseId, LocalDateTime dateTime, Character grade);
+    Boolean addStudentInCourse(String username, Long courseId, LocalDateTime dateTime, Character grade);
 
 
     Optional<Course> findByName(String name);
@@ -25,4 +25,5 @@ public interface CourseService {
 
     void deleteById(Long id);
     List<Grade> findGradesById(Long id);
+
 }

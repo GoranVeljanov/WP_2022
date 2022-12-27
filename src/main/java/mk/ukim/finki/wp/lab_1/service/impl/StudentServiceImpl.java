@@ -20,6 +20,10 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> listAll() {
         return this.studentRepository.findAll();
     }
+    @Override
+    public List<Student> findStudentByUsername(String username) {
+        return this.studentRepository.findStudentByUsername(username);
+    }
 
     @Override
     public List<Student> searchStudentByNameOrSurname(String text) {

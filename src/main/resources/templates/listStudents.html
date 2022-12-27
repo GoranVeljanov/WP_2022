@@ -3,19 +3,19 @@
 <head>
     <meta charset="utf-8">
     <title>Add new Student to Course</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
     <style type="text/css">
-        body {
-            width: 800px;
-            margin: auto;
-        }
 
-        table {
-            width: 100%;
-        }
 
         table, td, th {
             border: 1px solid black;
@@ -23,7 +23,7 @@
         }
 
         section {
-            float: left;
+            display: inline-block;
             margin: 0 1.5%;
             width: 63%;
         }
@@ -36,58 +36,74 @@
     </style>
 </head>
 <body>
-<header>
-    <h1>Student Enrollment - Select the Student </h1>
-    <ul>
-        <li th:each="student: ${students}" style="list-style-type: none;">
-            <th:block th:text="${student.username}"></th:block>
-<!--            <th:block th:text="${student.surname}"></th:block>-->
-            </br>
-        </li>
-    </ul>
-    <br/>
-</header>
-<section>
-    <h2>Select the student to enroll:</h2>
-    <a th:href="@{createStudent}" type='button' class="btn btn-sm btn-info" name="submit" id="submit">Create New Student</a> <br/> <br/>
-    <form th:action="@{StudentEnrollmentSummary}" th:method="POST">
+<div>
+    <h5 class="text-center text-danger" th:text="${error}"></h5>
+</div>
+<div class="container">
+    <header>
+        <h1>Student Enrollment - Select the Student </h1>
+        <div class="back-btn">
+            <a class="btn btn-block btn-outline-secondary" href="/courses">Back</a>
+            <a th:href="@{createStudent}" type='button' class="btn btn-block btn-info" name="submit" id="submit">
+                Create New Student
+            </a>
+        </div>
         <ul>
-            <li th:each="student: ${allStudents}" style="list-style-type: none;">
-
-                <input type="radio" name="username" th:value="${student.username}">
-                <th:block th:text="${student.name}"></th:block>
-                <th:block th:text="${student.surname}"></th:block>
-                <th:block th:text="${grade}"></th:block>
+            <li th:each="student: ${students}" style="list-style-type: none;">
+                <th:block th:text="${student.username}"></th:block>
                 </br>
             </li>
         </ul>
-        <input type="datetime-local" name="dateTime" id="date"/>
-        <label for="date">Date</label>
+        <div class="create-student-tab">
+            <h2>Select the student to enroll:</h2>
+        </div>
         <br/>
-        <input type="text" id="grade" name="grade"/>
-        <label for="grade">Grade</label>
-        <br/>
-        <br/>
-        <input class="btn btn-sm btn-dark" type="submit" name="submit" id="btn">
-    </form>
-    <a class="btn btn-sm btn-dark" href="/courses">Back</a>
-</section>
-<aside>
-    <table>
-        <tr>
-            <th colspan="2">
-                Your Enrollment Status
-            </th>
-        </tr>
-        <tr>
-            <td><b>
-                CourseId </b></td>
-            <td>
-                <th:block th:text="${courseId}"></th:block>
-            </td>
-        </tr>
-    </table>
-</aside>
+    </header>
+    <section>
+        <form th:action="@{StudentEnrollmentSummary}" th:method="POST">
+            <ul>
+                <li th:each="student: ${allStudents}" style="list-style-type: none;">
 
+                    <input type="radio" name="username" class="form-check-input" th:value="${student.username}">
+                    <th:block th:text="${student.username}"></th:block>
+                    <th:block th:text="${student.surname}"></th:block>
+                    <th:block th:each="grade : ${grades}" th:text="${grade.grade}"></th:block>
+                    </br>
+                </li>
+            </ul>
+            <input type="datetime-local" class="form-control" name="dateTime" id="date"/>
+            <label for="date">Date</label>
+            <br/>
+            <input type="number" class="form-control" min="5" max="10" id="grade" name="grade"/>
+            <label for="grade">Grade</label>
+            <br/>
+            <br/>
+            <input class="btn btn-block btn-dark" type="submit" name="submit" id="btn">
+        </form>
+
+    </section>
+    <aside>
+        <table class="table">
+            <thead colspan="2" class="thead-dark">
+            <tr scope="col">
+                <th>Your Enrollment Status</th>
+                <th scope="col">#</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">CourseId</th>
+                <td>
+                    <th:block th:text="${courseId}"></th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <a href="/courses/failed" class="btn btn-sm btn-danger">Failed Students</a>
+    </aside>
+
+</div>
 </body>
 </html>
